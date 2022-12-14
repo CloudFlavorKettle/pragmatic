@@ -1,5 +1,12 @@
 from .base import *
 
+def read_secret(secret_name):
+    file = open('/run/secrets/' + secret_name)
+    secret = file.read()
+    secret = secret.rstrip().lstrip()
+    file.close()
+    return secret
+
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
@@ -13,7 +20,7 @@ DEBUG = False
 
 # Raises Django's ImproperlyConfigured
 # exception if SECRET_KEY not in os.environ
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = read_secret('DJANGO_SECRET_KEY')
 
 # Parse database connection url strings
 # like psql://user:pass@127.0.0.1:8458/db
@@ -31,7 +38,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django',
         'USER': 'django',
-        'PASSWORD': 'password1234',
+        'PASSWORD': read_secret('MYSQL_PASSWORD'),
         'HOST': 'mariadb',
         'PORT': '3306',
 
