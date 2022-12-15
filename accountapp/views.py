@@ -1,9 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import redirect
 
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -20,7 +18,7 @@ has_ownership = [account_ownership_required, login_required]
 class AccountCreateView(CreateView):
     model = User
     form_class = UserCreationForm
-    success_url = reverse_lazy('accountapp:detail')
+    success_url = reverse_lazy('accountapp:login')
     template_name = 'accountapp/create.html'
 
 class AccountDetailView(DetailView, MultipleObjectMixin):
@@ -33,14 +31,17 @@ class AccountDetailView(DetailView, MultipleObjectMixin):
     def get_context_data(self, **kwargs):
         object_list = Article.objects.filter(writer=self.get_object())
         return super(AccountDetailView, self).get_context_data(object_list=object_list, **kwargs)
+
 @method_decorator(has_ownership, 'get')
 @method_decorator(has_ownership, 'post')
 class AccountUpdateView(UpdateView):
     model = User
     form_class = AccountUpdateForm
     context_object_name = 'target_user'
-    success_url = reverse_lazy('account:detail')
-    template_name = 'accountapp/create.html'
+    template_name = 'accountapp/update.html'
+
+    def get_success_url(self):
+        return reverse('accountapp:detail', kwargs={'pk': self.object.pk})
 
 @method_decorator(has_ownership, 'get')
 @method_decorator(has_ownership, 'post')
