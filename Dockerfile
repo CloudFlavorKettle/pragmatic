@@ -4,6 +4,8 @@ WORKDIR /home/
 
 RUN echo "testing1234"
 
+RUN echo "accountapp_fix"
+
 RUN git clone https://github.com/CloudFlavorKettle/pragmatic.git
 
 WORKDIR /home/pragmatic/

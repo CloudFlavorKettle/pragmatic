@@ -87,3 +87,7 @@ db.sqlite3
 __pycache__/
 
 media/
+
+nginx.conf
+
+docker-compose.yml
